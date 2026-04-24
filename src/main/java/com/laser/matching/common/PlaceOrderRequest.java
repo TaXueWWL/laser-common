@@ -7,6 +7,7 @@ import com.laser.matching.common.enums.StpStrategyEnum;
 import com.laser.matching.common.enums.TimeInForceEnum;
 import com.laser.matching.utils.BigDecimalUtil;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
@@ -15,9 +16,10 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString
-public class PlaceOrderRequest {
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class PlaceOrderRequest extends AbstractRequest {
 
     /**
      * 订单号 使用idGenerator生成，long型，雪花算法
@@ -88,6 +90,9 @@ public class PlaceOrderRequest {
         PlaceOrderCommandEncoder encoder = new PlaceOrderCommandEncoder();
         encoder.wrapAndApplyHeader(buffer, offset, headerEncoder);
 
+        // 序号在最前
+        encoder.serialNum(this.getSerialNum());
+
         // 定长 field
         encoder.orderId(this.getOrderId());
         encoder.accountId(this.getAccountId());
@@ -125,6 +130,9 @@ public class PlaceOrderRequest {
         MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
         PlaceOrderCommandDecoder decoder = new PlaceOrderCommandDecoder();
         decoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
+
+        // 序号在最前
+        this.setSerialNum(decoder.serialNum());
 
         // 定长 field
         this.setOrderId(decoder.orderId());

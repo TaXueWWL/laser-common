@@ -44,4 +44,8 @@ public enum CancelReasonEnum {
     public boolean isValidOrderType(int code) {
         return codeToEnum.containsKey(code);
     }
+
+    public int getCode() {
+        return this.code;
+    }
 }

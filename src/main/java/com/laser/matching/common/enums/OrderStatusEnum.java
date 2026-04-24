@@ -50,4 +50,8 @@ public enum OrderStatusEnum {
     public boolean over() {
         return this.over;
     }
+
+    public int getCode() {
+        return this.code;
+    }
 }

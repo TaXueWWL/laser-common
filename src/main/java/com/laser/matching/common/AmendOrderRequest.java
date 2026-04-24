@@ -6,6 +6,7 @@ import com.laser.matching.common.codec.MessageHeaderDecoder;
 import com.laser.matching.common.codec.MessageHeaderEncoder;
 import com.laser.matching.utils.BigDecimalUtil;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
@@ -14,9 +15,10 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString
-public class AmendOrderRequest {
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class AmendOrderRequest extends AbstractRequest {
 
     /**
      * 待修改订单号
@@ -50,6 +52,9 @@ public class AmendOrderRequest {
         AmendOrderCommandEncoder encoder = new AmendOrderCommandEncoder();
         encoder.wrapAndApplyHeader(buffer, offset, headerEncoder);
 
+        // 序号在最前
+        encoder.serialNum(this.getSerialNum());
+
         // 定长 field
         encoder.orderId(this.getOrderId());
         encoder.symbolCode(this.getSymbolCode());
@@ -72,6 +77,9 @@ public class AmendOrderRequest {
         MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
         AmendOrderCommandDecoder decoder = new AmendOrderCommandDecoder();
         decoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
+
+        // 序号在最前
+        this.setSerialNum(decoder.serialNum());
 
         // 定长 field
         this.setOrderId(decoder.orderId());

@@ -5,15 +5,17 @@ import com.laser.matching.common.codec.CancelOrderCommandEncoder;
 import com.laser.matching.common.codec.MessageHeaderDecoder;
 import com.laser.matching.common.codec.MessageHeaderEncoder;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString
-public class CancelOrderRequest {
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class CancelOrderRequest extends AbstractRequest {
 
     /**
      * 要撤单的撮合/柜台 内部订单号
@@ -37,6 +39,7 @@ public class CancelOrderRequest {
         CancelOrderCommandEncoder encoder = new CancelOrderCommandEncoder();
         encoder.wrapAndApplyHeader(buffer, offset, headerEncoder);
 
+        encoder.serialNum(this.getSerialNum());
         encoder.orderId(this.getOrderId());
         encoder.symbolCode(this.getSymbolCode());
 
@@ -55,6 +58,7 @@ public class CancelOrderRequest {
         CancelOrderCommandDecoder decoder = new CancelOrderCommandDecoder();
         decoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
 
+        this.setSerialNum(decoder.serialNum());
         this.setOrderId(decoder.orderId());
         this.setSymbolCode(decoder.symbolCode());
 
