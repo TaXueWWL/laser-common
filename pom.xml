@@ -132,6 +132,7 @@
                             <classpathScope>compile</classpathScope>
                             <arguments>
                                 <argument>${project.basedir}/src/main/resources/sbe/match-engine-sbe.xml</argument>
+                                <argument>${project.basedir}/src/main/resources/sbe/match-engine-snapshot-sbe.xml</argument>
                             </arguments>
                             <systemProperties>
                                 <systemProperty>
