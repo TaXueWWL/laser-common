@@ -94,6 +94,12 @@
             <validValue name="TRADE_SWITCH">6</validValue>
         </enum>
 
+        <!-- 上下币操作 op: 1=上币 LIST, 2=下币 DELIST -->
+        <enum name="SymbolOp" encodingType="uint8">
+            <validValue name="LIST">1</validValue>
+            <validValue name="DELIST">2</validValue>
+        </enum>
+
         <!-- MatchResult 公共头: 内联到每个 result message 的固定 block 起始 -->
         <composite name="resultCommonHeader" description="MatchResult 公共头">
             <type name="systemType" primitiveType="uint8"/>
@@ -134,6 +140,21 @@
         <field name="serialNum" id="0" type="uint64"/>
         <field name="orderId" id="1" type="uint64"/>
         <field name="symbolCode" id="2" type="uint16"/>
+    </message>
+
+    <!-- 上下币指令 (控制面命令，不参与 serialNum 连续性校验) -->
+    <message name="UpDownSymbolCommand" id="105" description="上下币指令">
+        <field name="op" id="1" type="SymbolOp"/>
+        <field name="symbolCode" id="2" type="uint16"/>
+        <field name="baseCoinId" id="3" type="uint32"/>
+        <field name="quoteCoinId" id="4" type="uint32"/>
+        <data name="symbolName" id="5" type="varStringEncoding"/>
+    </message>
+
+    <!-- 币对开关交易指令 (控制面命令，不参与 serialNum 连续性校验) -->
+    <message name="TradeSwitchCommand" id="106" description="币对开关交易指令">
+        <field name="symbolCode" id="1" type="uint16"/>
+        <field name="switchOn" id="2" type="BooleanType"/>
     </message>
 
     <!-- ====================== MatchResult 事件定义 ====================== -->
@@ -177,13 +198,14 @@
         <data name="remainingAmount" id="9" type="varStringEncoding"/>
     </message>
 
-    <!-- 上币 / 下币结果, resultBizType=SYMBOL_UP|SYMBOL_DOWN -->
+    <!-- 上币 / 下币结果, resultBizType=SYMBOL_UP|SYMBOL_DOWN
+         约定: symbolCode (uint16) 即 symbolId, 全局唯一; symbolName (varString) 是名字也唯一 -->
     <message name="UpDownSymbolResult" id="203" description="上币/下币结果">
         <field name="header" id="1" type="resultCommonHeader"/>
-        <field name="symbolCode" id="2" type="uint16"/>
-        <field name="baseCoinId" id="3" type="uint32"/>
-        <field name="quoteCoinId" id="4" type="uint32"/>
-        <data name="symbolId" id="5" type="varStringEncoding"/>
+        <field name="op" id="2" type="SymbolOp"/>
+        <field name="symbolCode" id="3" type="uint16"/>
+        <field name="baseCoinId" id="4" type="uint32"/>
+        <field name="quoteCoinId" id="5" type="uint32"/>
         <data name="symbolName" id="6" type="varStringEncoding"/>
     </message>
 

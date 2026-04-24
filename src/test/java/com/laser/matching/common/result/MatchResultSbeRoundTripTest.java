@@ -145,10 +145,10 @@ class MatchResultSbeRoundTripTest {
                 .resultSerialNum(33L)
                 .requestSerialNum(5L)
                 .createTime(1700000003000L)
+                .op(com.laser.matching.common.enums.SymbolOpEnum.LIST)
                 .symbolCode(300)
                 .baseCoinId(1L)
                 .quoteCoinId(2L)
-                .symbolId("ABC_USDT")
                 .symbolName("ABC/USDT")
                 .build();
 
@@ -162,7 +162,6 @@ class MatchResultSbeRoundTripTest {
         assertEquals(300, dec.symbolCode());
         assertEquals(1L, dec.baseCoinId());
         assertEquals(2L, dec.quoteCoinId());
-        assertEquals("ABC_USDT", dec.symbolId());
         assertEquals("ABC/USDT", dec.symbolName());
     }
 
